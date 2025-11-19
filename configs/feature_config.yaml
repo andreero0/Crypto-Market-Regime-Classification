@@ -1,0 +1,124 @@
+# Feature Engineering Configuration
+
+features:
+  # Base OHLCV features
+  base:
+    - open
+    - high
+    - low
+    - close
+    - volume
+    - market
+    - close_ratio
+    - spread
+
+  # Technical Indicators
+  technical_indicators:
+    moving_averages:
+      sma:
+        - window: 7
+          name: "SMA_7"
+        - window: 20
+          name: "SMA_20"
+      ema:
+        - span: 12
+          name: "EMA_12"
+        - span: 26
+          name: "EMA_26"
+
+    momentum:
+      rsi:
+        period: 14
+        name: "RSI_14"
+      macd:
+        fast: 12
+        slow: 26
+        signal: 9
+        name: "MACD"
+
+    volatility:
+      bollinger_bands:
+        window: 20
+        num_std: 2
+        names:
+          - "Upper_Band"
+          - "Lower_Band"
+          - "STD_20"
+
+  # Lag features
+  lag_features:
+    enabled: true
+    columns:
+      - close
+      - volume
+    lags: [1, 3, 5, 7]
+
+  # Rolling statistics
+  rolling_stats:
+    enabled: true
+    columns:
+      - close
+      - volume
+    windows: [7, 14, 21]
+    metrics:
+      - mean
+      - std
+
+  # Feature selection
+  final_features:
+    - open
+    - high
+    - low
+    - close
+    - volume
+    - market
+    - close_ratio
+    - spread
+    - SMA_7
+    - RSI_14
+    - EMA_12
+    - EMA_26
+    - MACD
+    - SMA_20
+    - STD_20
+    - Upper_Band
+    - Lower_Band
+
+# Data preprocessing
+preprocessing:
+  outlier_handling:
+    method: "winsorization"
+    lower_percentile: 0.01
+    upper_percentile: 0.99
+
+  missing_values:
+    method: "forward_fill"
+    max_fill: 5
+
+  scaling:
+    method: "MinMaxScaler"
+    feature_range: [0, 1]
+
+  normalization:
+    enabled: false
+
+# Data splitting
+data_split:
+  method: "time_series"
+  train_end_date: "2017-06-01"
+  validation_end_date: "2018-01-01"
+  test_start_date: "2018-01-01"
+
+# Cryptocurrencies
+assets:
+  top_10:
+    - BTC
+    - ETH
+    - BCH
+    - XRP
+    - ADA
+    - EOS
+    - MIOTA
+    - TRX
+    - LTC
+    - NEO

@@ -1,0 +1,61 @@
+# LSTM Model Configuration
+
+model:
+  name: "BiLSTM-Regime-Classifier"
+  version: "1.0.0"
+
+  architecture:
+    sequence_length: 10
+    n_features: 17
+    lstm_units: 64
+    dense_units: 32
+    dropout_rates: [0.3, 0.3, 0.5]
+    n_classes: 3
+    bidirectional: true
+    use_batch_norm: true
+
+  hyperparameters:
+    optimizer: "Adam"
+    learning_rate: 0.001
+    loss: "categorical_crossentropy"
+    metrics: ["accuracy"]
+    batch_size: 64
+    epochs: 20
+    validation_split: 0.2
+
+  callbacks:
+    early_stopping:
+      enabled: true
+      monitor: "val_loss"
+      patience: 5
+      restore_best_weights: true
+
+    reduce_lr:
+      enabled: true
+      monitor: "val_loss"
+      factor: 0.5
+      patience: 3
+      min_lr: 0.0001
+
+    model_checkpoint:
+      enabled: true
+      monitor: "val_accuracy"
+      save_best_only: true
+      filepath: "models/best_crypto_model.h5"
+
+  class_weights:
+    enabled: true
+    method: "balanced"
+
+  regime_thresholds:
+    bullish:
+      min_1day_change: 0.0
+      min_3day_change: 0.0
+      threshold: 0.015  # 1.5%
+    bearish:
+      max_1day_change: 0.0
+      max_3day_change: 0.0
+      threshold: -0.015  # -1.5%
+    neutral:
+      max_1day_abs: 0.01  # ±1%
+      max_3day_abs: 0.02  # ±2%
