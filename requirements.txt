@@ -1,0 +1,28 @@
+# Core dependencies
+pandas==1.5.3
+numpy==1.23.5
+scikit-learn==1.2.2
+
+# Deep Learning
+tensorflow==2.12.0
+
+# Visualization
+matplotlib==3.7.1
+seaborn==0.12.2
+
+# Data sources
+kagglehub==0.2.5
+
+# Model interpretation
+shap==0.42.1
+
+# Utilities
+joblib==1.2.0
+pyyaml==6.0
+
+# Statistical
+scipy==1.10.1
+
+# Jupyter
+jupyter==1.0.0
+ipykernel==6.22.0

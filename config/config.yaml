@@ -1,0 +1,103 @@
+# Configuration file for Crypto Market Regime Classification
+# Version: 1.0
+# Created: 2025-11-19
+
+# Data Configuration
+data:
+  date_range:
+    start: "2015-01-01"
+    end: "2018-11-30"
+  top_n_cryptos: 10
+  outlier_percentiles: [1, 99]
+
+# Feature Engineering
+features:
+  technical_indicators:
+    sma_window: 7
+    rsi_window: 14
+    ema_windows: [12, 26]
+    bollinger_window: 20
+    macd_windows: [12, 26]
+
+  lag_features:
+    columns: ['close', 'volume']
+    lags: [1, 3, 5, 7]
+
+  rolling_features:
+    windows: [7, 14, 21]
+    statistics: ['mean', 'std']
+
+# Market Condition Classification
+market_conditions:
+  bullish_threshold: 0.015
+  bearish_threshold: -0.015
+  neutral_threshold: 0.01
+  lookback_days: [1, 3]
+
+# Model Architecture
+model:
+  name: "BidirectionalLSTM"
+  timesteps: 10
+  lstm_layers:
+    - units: 64
+      return_sequences: true
+      dropout: 0.3
+    - units: 64
+      return_sequences: false
+      dropout: 0.3
+  dense_layers:
+    - units: 32
+      activation: "relu"
+      dropout: 0.5
+  output_activation: "softmax"
+
+# Training Configuration
+training:
+  epochs: 20
+  batch_size: 64
+  validation_split: 0.15
+  test_split: 0.15
+
+  optimizer:
+    name: "adam"
+    learning_rate: 0.001
+
+  callbacks:
+    early_stopping:
+      monitor: "val_loss"
+      patience: 5
+      restore_best_weights: true
+
+    reduce_lr:
+      monitor: "val_loss"
+      factor: 0.5
+      patience: 3
+      min_lr: 0.0001
+
+    model_checkpoint:
+      monitor: "val_loss"  # Consistent with early_stopping
+      save_best_only: true
+      filepath: "models/best_crypto_model.h5"
+
+# Evaluation
+evaluation:
+  metrics: ['accuracy', 'precision', 'recall', 'f1']
+  generate_confusion_matrix: true
+  per_class_analysis: true
+  per_crypto_analysis: true
+
+# Reproducibility
+random_seed: 42
+
+# Paths
+paths:
+  data_dir: "data/"
+  raw_data_dir: "data/raw/"
+  processed_data_dir: "data/processed/"
+  external_data_dir: "data/external/"
+  models_dir: "models/"
+  results_dir: "results/"
+  figures_dir: "results/figures/"
+  metrics_dir: "results/metrics/"
+  predictions_dir: "results/predictions/"
+  logs_dir: "logs/"
